@@ -7,9 +7,11 @@
     <groupId>de.t0bx</groupId>
     <artifactId>permify</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <modules>
         <module>permify-velocity</module>
         <module>permify-paper</module>
     </modules>
+
 </project>
