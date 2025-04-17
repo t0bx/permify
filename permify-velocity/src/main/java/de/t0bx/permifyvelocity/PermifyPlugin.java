@@ -4,6 +4,8 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 
 @Plugin(
@@ -14,7 +16,18 @@ import org.slf4j.Logger;
 )
 public class PermifyPlugin {
 
-    @Inject private Logger logger;
+    private final Logger logger;
+
+    private final ProxyServer proxy;
+
+    private final DataDirectory dataDirectory;
+
+    @Inject
+    public PermifyPlugin(Logger logger, ProxyServer proxy, DataDirectory dataDirectory) {
+        this.logger = logger;
+        this.proxy = proxy;
+        this.dataDirectory = dataDirectory;
+    }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
