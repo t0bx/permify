@@ -7,9 +7,19 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import de.t0bx.permifyvelocity.config.ConfigManager;
+import de.t0bx.permifyvelocity.database.IMySQLHandler;
+import de.t0bx.permifyvelocity.database.MySQLHandler;
+import de.t0bx.permifyvelocity.group.GroupHandler;
+import de.t0bx.permifyvelocity.group.IGroupHandler;
+import de.t0bx.permifyvelocity.permission.IPermissionHandler;
+import de.t0bx.permifyvelocity.permission.PermissionHandler;
 import de.t0bx.permifyvelocity.redis.RedisProvider;
+import de.t0bx.permifyvelocity.user.IUserHandler;
+import de.t0bx.permifyvelocity.user.UserHandler;
 import lombok.Getter;
 import org.slf4j.Logger;
+
+import java.sql.SQLException;
 
 @Getter
 @Plugin(
@@ -33,23 +43,79 @@ public class PermifyPlugin {
 
     private final RedisProvider redisProvider;
 
+    private final IMySQLHandler mySQLHandler;
+
+    private final IPermissionHandler permissionHandler;
+
+    private final IGroupHandler groupHandler;
+
+    private final IUserHandler userHandler;
+
+    private final String prefix = "<gradient:#00aaaa:#55ffff>Permify</gradient> <dark_gray>|</dark_gray> <gray>";
+
     @Inject
     public PermifyPlugin(Logger logger, ProxyServer proxy, DataDirectory dataDirectory) {
         instance = this;
         this.logger = logger;
         this.proxy = proxy;
         this.dataDirectory = dataDirectory;
+        this.getLogger().info("Initializing Permify Velocity...");
 
         this.configManager = new ConfigManager();
 
-        this.redisProvider = new RedisProvider();
+        this.redisProvider = new RedisProvider(this.configManager.getRedisHost(), this.configManager.getRedisPort());
 
-        this.getLogger().info("Initializing Permify Velocity...");
+        this.mySQLHandler = new MySQLHandler(
+                this.configManager.getDatabaseHost(),
+                this.configManager.getDatabasePort(),
+                this.configManager.getDatabaseUsername(),
+                this.configManager.getDatabasePassword(),
+                this.configManager.getDatabaseName()
+        );
+
+        try {
+            this.mySQLHandler.connect();
+            this.createDefaultTables();
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        this.groupHandler = new GroupHandler();
+        this.userHandler = new UserHandler();
+
+        this.permissionHandler = new PermissionHandler();
+
     }
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
 
         this.getLogger().info("Started Permify Velocity.");
+    }
+
+    private void createDefaultTables() throws SQLException {
+        String userTable = "CREATE TABLE IF NOT EXISTS permify_users(" +
+                "uuid VARCHAR(36) PRIMARY KEY, " +
+                "group TEXT NOT NULL)";
+
+        this.mySQLHandler.update(userTable);
+
+        String userPermissionTable = "CREATE TABLE IF NOT EXISTS permify_users_permissions(" +
+                "uuid VARCHAR(36) NOT NULL, " +
+                "permission TEXT NOT NULL)";
+
+        this.mySQLHandler.update(userPermissionTable);
+
+        String groupTable = "CREATE TABLE IF NOT EXISTS permify_groups(" +
+                "groupName VARCHAR(26) PRIMARY KEY, " +
+                "inheritanceFrom TEXT)";
+
+        this.mySQLHandler.update(groupTable);
+
+        String groupPermissionTable = "CREATE TABLE IF NOT EXISTS permify_groups_permissions(" +
+                "groupName TEXT NOT NULL, " +
+                "permission TEXT NOT NULL)";
+
+        this.mySQLHandler.update(groupPermissionTable);
     }
 }

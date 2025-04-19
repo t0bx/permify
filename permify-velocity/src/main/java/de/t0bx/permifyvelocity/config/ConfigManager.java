@@ -12,12 +12,14 @@ import java.io.IOException;
 public class ConfigManager {
 
     private final Gson gson;
+    private final File directory;
     private final File file;
     private JsonObject config;
 
     public ConfigManager() {
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-        this.file = new File("config.json");
+        this.directory = new File("plugins/Permify/");
+        this.file = new File(directory, "config.json");
         loadConfig();
     }
 
@@ -37,6 +39,10 @@ public class ConfigManager {
 
     public void createDefaultConfig() {
         try {
+            if (!this.directory.exists()) {
+                this.directory.mkdir();
+            }
+
             if (!this.file.exists()) {
                 file.createNewFile();
             }
@@ -82,7 +88,7 @@ public class ConfigManager {
         return this.config.getAsJsonObject("database").get("port").getAsInt();
     }
 
-    public String getUsername() {
+    public String getDatabaseUsername() {
         return this.config.getAsJsonObject("database").get("username").getAsString();
     }
 

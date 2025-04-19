@@ -3,3 +3,5 @@ version: '1.0.0'
 main: de.t0bx.permifypaper.PermifyPlugin
 api-version: '1.21'
 authors: [t0bx]
+commands:
+  check:
