@@ -26,6 +26,10 @@ public class MessageProvider {
             MessageId.GROUP_DELETED, Map.of(
                     Language.ENGLISH, "<green>The group %group% has been deleted.",
                     Language.GERMAN, "<green>Die Gruppe %group% wurde gelöscht."
+            ),
+            MessageId.PLAYER_NOT_FOUND, Map.of(
+                    Language.ENGLISH, "<red>The player %player% doesn't exist.",
+                    Language.GERMAN, "<red>Der Spieler %player% existiert nicht."
             )
     );
 

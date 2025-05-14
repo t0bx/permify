@@ -27,7 +27,7 @@ public class UserHandler implements IUserHandler {
     public boolean setGroup(UUID uuid, PermissionGroup group) {
         if (!this.groupHandler.existGroup(group.getGroupName())) return false;
 
-        String sql = "UPDATE permify_users SET group = ? WHERE uuid = ?";
+        String sql = "UPDATE permify_users SET groupName = ? WHERE uuid = ?";
 
         this.mysqlHandler.updateAsync(sql, group.getGroupName(), uuid.toString());
         this.redisProvider.set("users." + uuid, group.getGroupName());
@@ -38,7 +38,7 @@ public class UserHandler implements IUserHandler {
     public boolean setGroup(UUID uuid, String groupName) {
         if (!this.groupHandler.existGroup(groupName)) return false;
 
-        String sql = "UPDATE permify_users SET group = ? WHERE uuid = ?";
+        String sql = "UPDATE permify_users SET groupName = ? WHERE uuid = ?";
 
         this.mysqlHandler.updateAsync(sql, groupName, uuid.toString());
         this.redisProvider.set("users." + uuid, groupName);

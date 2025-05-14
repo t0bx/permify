@@ -5,5 +5,6 @@ public enum MessageId {
     GROUP_CREATED,
     GROUP_DOES_NOT_EXIST,
     GROUP_DELETED,
-    GROUP_NOT_FOUND
+    GROUP_NOT_FOUND,
+    PLAYER_NOT_FOUND
 }

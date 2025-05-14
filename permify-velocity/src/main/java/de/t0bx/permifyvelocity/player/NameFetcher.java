@@ -35,18 +35,15 @@ public class NameFetcher {
             throw new IllegalArgumentException("UUID darf nicht null sein");
         }
 
-        // Prüfen, ob Name bereits im Cache ist
         if (UUID_NAME_CACHE.containsKey(uuid)) {
             String name = UUID_NAME_CACHE.get(uuid);
             boolean isBedrock = BEDROCK_PLAYER_CACHE.getOrDefault(uuid, false);
             return isBedrock ? "." + name : name;
         }
 
-        // Versuchen, den Namen über die Java-API zu holen
         try {
             return fetchJavaName(uuid);
         } catch (Exception e) {
-            // Wenn das fehlschlägt, versuchen wir es mit der Bedrock-API
             return fetchBedrockName(uuid);
         }
     }
@@ -87,8 +84,6 @@ public class NameFetcher {
     }
 
     private static String fetchBedrockName(UUID uuid) throws Exception {
-        // Hier würde die eigentliche Implementierung für die Bedrock-API kommen
-        // Dies ist ein Beispiel, wie es aussehen könnte:
         HttpURLConnection connection = (HttpURLConnection) new URL(XBOX_API_URL + uuid.toString()).openConnection();
         connection.setRequestMethod("GET");
 
@@ -100,7 +95,7 @@ public class NameFetcher {
                 UUID_NAME_CACHE.put(uuid, name);
                 BEDROCK_PLAYER_CACHE.put(uuid, true);
 
-                return "." + name; // Wir geben den Namen mit einem Punkt zurück, um Bedrock-Spieler zu kennzeichnen
+                return "." + name;
             }
         } else {
             throw new Exception("Konnte Namen für Bedrock-Spieler nicht abrufen: HTTP " + connection.getResponseCode());

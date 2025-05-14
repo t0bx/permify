@@ -20,7 +20,7 @@ public class ConfigManager {
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         this.directory = new File("plugins/Permify/");
         this.file = new File(directory, "config.json");
-        loadConfig();
+        this.loadConfig();
     }
 
     private void loadConfig() {
@@ -62,13 +62,15 @@ public class ConfigManager {
             databaseObject.addProperty("password", "test");
             jsonObject.add("database", databaseObject);
 
+            jsonObject.addProperty("language", "en");
+
             this.config = jsonObject;
 
             try (FileWriter writer = new FileWriter(this.file)) {
                 this.gson.toJson(jsonObject, writer);
             }
         } catch (IOException exception) {
-            throw new RuntimeException("Fehler beim Erstellen der Standardkonfiguration", exception);
+            throw new RuntimeException("Error while creating default configuration file", exception);
         }
     }
 
@@ -98,6 +100,10 @@ public class ConfigManager {
 
     public String getDatabasePassword() {
         return this.config.getAsJsonObject("database").get("password").getAsString();
+    }
+
+    public String getLanguage() {
+        return this.config.get("language").getAsString();
     }
 
     public void saveConfig() {

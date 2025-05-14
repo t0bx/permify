@@ -37,16 +37,13 @@ public class UUIDFetcher {
             throw new IllegalArgumentException("Name darf nicht null oder leer sein");
         }
 
-        // Prüfen, ob UUID bereits im Cache ist
         if (NAME_UUID_CACHE.containsKey(name)) {
             return NAME_UUID_CACHE.get(name);
         }
 
-        // Bestimmen, ob es sich um einen Bedrock-Spieler handelt
         boolean isBedrock = name.startsWith(".");
         String actualName = isBedrock ? name.substring(1) : name;
 
-        // API-Anfrage je nach Spielertyp
         if (isBedrock) {
             return fetchBedrockUUID(actualName);
         } else {
@@ -79,10 +76,9 @@ public class UUIDFetcher {
                 JsonObject response = JsonParser.parseReader(reader).getAsJsonObject();
                 String id = response.get("id").getAsString();
 
-                // Mojang API liefert UUIDs ohne Bindestriche
                 UUID uuid = UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
                 NAME_UUID_CACHE.put(name, uuid);
-                NAME_UUID_CACHE.put("." + name, uuid); // Cache auch für Bedrock-Format
+                NAME_UUID_CACHE.put("." + name, uuid);
 
                 return uuid;
             }
@@ -92,8 +88,6 @@ public class UUIDFetcher {
     }
 
     private static UUID fetchBedrockUUID(String name) throws Exception {
-        // Hier würde die eigentliche Implementierung für die Bedrock-API kommen
-        // Dies ist ein Beispiel, wie es aussehen könnte:
         HttpURLConnection connection = (HttpURLConnection) new URL(XBOX_API_URL + name).openConnection();
         connection.setRequestMethod("GET");
 
@@ -102,8 +96,6 @@ public class UUIDFetcher {
                 JsonObject response = JsonParser.parseReader(reader).getAsJsonObject();
                 String id = response.get("floodgateuid").getAsString();
 
-                // Konvertieren der Bedrock-ID ins UUID-Format (dies ist ein Beispiel)
-                // In der Praxis müsste dies an die tatsächliche API angepasst werden
                 UUID uuid = UUID.fromString(id);
                 NAME_UUID_CACHE.put("." + name, uuid);
 

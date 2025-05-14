@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Builder
-public abstract class PermissionUser {
+public class PermissionUser {
 
     private final @NotNull UUID uuid;
     private final PermissionGroup permissionGroup;

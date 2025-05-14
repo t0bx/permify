@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
-public abstract class PermissionGroup {
+public class PermissionGroup {
 
     private final @NotNull String groupName;
     private final String inheritanceFrom;
-    private final List<String> permissions;
+    private final Set<String> permissions;
 
 }

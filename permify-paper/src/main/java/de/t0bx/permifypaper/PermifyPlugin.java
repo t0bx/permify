@@ -47,12 +47,9 @@ public final class PermifyPlugin extends JavaPlugin {
             permissionsField.setAccessible(true);
 
             Map<String, Boolean> permissions = (Map<String, Boolean>) permissionsField.get(permissibleBase);
-
             permissions.put(permission, value);
         } catch (Exception exception) {
             throw new RuntimeException(exception);
         }
     }
-
-
 }
